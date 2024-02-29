@@ -1,0 +1,9 @@
+
+"pilot_base"
+{
+	"global"
+	{
+		ui_targetinfo				"ui/targetinfo_reaper_bounty"
+		ui_targetinfo_offset_z		24
+	}
+}

@@ -1,0 +1,5 @@
+
+npc_soldier
+{
+	ui_targetinfo			"" [$mp]
+}

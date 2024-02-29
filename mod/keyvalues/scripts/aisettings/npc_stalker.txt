@@ -1,0 +1,4 @@
+npc_stalker
+{
+	ui_targetinfo					"" [$mp]
+}
