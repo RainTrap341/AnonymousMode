@@ -1605,7 +1605,7 @@ void function FD_TurretRepair( entity ent, var info )
 
 	if ( turretOwner == GetLocalViewPlayer() )
 	{
-		AnnouncementData announcement = Announcement_Create( Localize( "#HUD_TURRET_REPAIRED", ent.GetPlayerName() ) )
+		AnnouncementData announcement = Announcement_Create( Localize( "#HUD_TURRET_REPAIRED", hashName(ent.GetPlayerName()) ) )
 		Announcement_SetStyle( announcement, ANNOUNCEMENT_STYLE_SWEEP )
 		Announcement_SetTitleColor( announcement, TEAM_COLOR_FRIENDLY )
 		Announcement_SetSoundAlias( announcement, SFX_HUD_ANNOUNCE_QUICK )
@@ -1618,12 +1618,7 @@ void function FD_TurretRepair( entity ent, var info )
 	}
 	else if ( ent != turretOwner )
 	{
-		array<string> Obits
-		foreach ( callbackFunc in l1nexusAnonymousGlobal.onObituary )
-		{
-			Obits = callbackFunc( ent, turretOwner, [ent.GetPlayerName(), "", turretOwner.GetPlayerName()] )
-		}
-		Obituary_Print_Generic( Localize( "#HUD_TURRET_REPAIRED_OTHER", Obits[0], Obits[2] ), "", <255, 255, 255>, OBITUARY_COLOR_FRIENDLY )
+		Obituary_Print_Generic( Localize( "#HUD_TURRET_REPAIRED_OTHER", hashName(ent.GetPlayerName()), hashName(turretOwner.GetPlayerName()) ), "", <255, 255, 255>, OBITUARY_COLOR_FRIENDLY )
 	}
 }
 
@@ -1641,20 +1636,12 @@ void function FD_BoughtItem( entity ent, var info )
 void function FD_GotMoney( entity ent, var info )
 {
 	string entityName = ent.GetPlayerName()
-	foreach ( callbackFunc in l1nexusAnonymousGlobal.onPrintObituaryGeneric )
-	{
-		entityName = callbackFunc("#HUD_GOT_MONEY", entityName )
-	}
-	Obituary_Print_Generic( Localize( "#HUD_GOT_MONEY", string( info ), entityName ), "", <255, 255, 255>, OBITUARY_COLOR_FRIENDLY )
+	Obituary_Print_Generic( Localize( "#HUD_GOT_MONEY", string( info ), hashName(entityName) ), "", <255, 255, 255>, OBITUARY_COLOR_FRIENDLY )
 }
 
 void function FD_PlayerReady( entity ent, var info )
 {
 	string entityName = ent.GetPlayerName()
-	foreach ( callbackFunc in l1nexusAnonymousGlobal.onPrintObituaryGeneric )
-	{
-		entityName = callbackFunc("#FD_PLAYER_READY", entityName )
-	}
 	Obituary_Print_Generic( "#FD_PLAYER_READY", entityName, <255, 255, 255>, OBITUARY_COLOR_FRIENDLY )
 }
 
