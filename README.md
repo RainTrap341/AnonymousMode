@@ -1,7 +1,7 @@
 My grammer is poor, I am very sorry if you get confused or annoyed at my interpretation.
 # 注意Caution
 
-为了使得敌人的血条、标志都能正常隐藏，这个模组使用了HidePermanentCockpitRui()函数，可能带来一些视觉上的错误表现。<br>
+如果要使得敌人的血条、标志都能正常隐藏，这个模组使用了HidePermanentCockpitRui()函数，可能带来一些视觉上的错误表现。<br>
 In order to make the enemy health-bar, name and icon invisible, this mod uses `HidePermanentCockpitRui()`.(This may cause some strange visual performances.)
 
 你可在配置文件中开启对这个函数的启用，它默认是关闭的的。<br>
@@ -9,10 +9,9 @@ If you want to get that on, just modify the `HidePermanentCockpitRui` from `true
 
 # 有啥用What this mod brings
 
-
 将所有玩家包括你的名字和网络名匿名，替换成别的文字。可以用来防止炸弹人。
-替换只包括计分板和击杀提示。<br>
-This will make the other players’ names look like “Pilot0000” or “\*\*\*\*\*\*” in the scoreboard(the pitch icon was changed with yours) and the obituary.
+替换包括计分板，击杀提示，死亡视角，训牛术，以及其他细节。不包括视野中玩家头顶的名称。<br>
+This will make the other players’ names look like “Pilot0000” or “\*\*\*\*\*\*” in the scoreboard(the pitch icon was changed with yours) , the obituary, the rodeo and more. Playernames on players in POV are not supported now.
 
 所有设置都在配置文件，每次修改需要重启游戏。<br>
 You can configure the performance in the mod.json.
@@ -37,55 +36,14 @@ It offers 3 modes: Digital | Replace | Apexlike. They may look like "28791512", 
   Pilot111<br>
   Pilot222<br>
 
-## 一些回调New callbacks
+同时也支持仅修改网络tag，请查看mod.json。
+Network clantag also supported, check the mod.json.
 
-如果你不是开发者，略过这里。<br>
-Ignore this part if you dont want to develop.
-
-我修改了下面这个文件，增加了三个回调函数。<br>
-`cl_obituary.gnut` was modified. 3 callbcacks added.
-
-### `AddCallback_Obituary( array<string> functionref( entity, entity, array<string> ) callbackFunc )`
-
-Added with `Obituary( entity attacker, string attackerClass, entity victim, int scriptDamageType, int damageSourceId, bool isHeadShot, bool victimIsOwnedTitan = false, bool forceDisplay = false )`
-
-Obituary is created in that function.
-
-这是用来修改击杀信息中人名的。<br>
-This mod use this to modify the attacker/victim names.
-
-```squirrel
-void function AddCallback_Obituary( array<string> functionref( entity, entity, array<string> ) callbackFunc )
-```
-
-### `AddCallback_PrintObituary( void functionref( ObitStringData ) callbackFunc )`
-
-Added with void function `Obituary_Print( string attackerDisplayName, string weaponDisplayName, string victimDisplayName, vector attackerColor, vector weaponColor, vector victimColor, weaponIcon = null, string attackerPetDisplayName = "", string victimPetDisplayName = "" )`
-
-我不知道干嘛的，但是寻思可以这样写。<br>
-Actually I don’t know what this function used for. If you wanna modify the obituary, don’t use this.
-
-```squirrel
-void function AddCallback_PrintObituary( void functionref( ObitStringData ) callbackFunc )
-```
-
-### `AddCallback_PrintObituaryLocalized( string functionref( string ) callbackFunc )`
-
-Added with void function `Obituary_Print_Localized( string localizedPrint, vector altColor1 = <255, 255, 255>, vector altColor2 = <255, 255, 255>, vector altColor3 = <255, 255, 255>, vector backgroundColor = <255, 255, 255>, float backgroundAlpha = 0.0 )`
-
-The Obituary(...) will call Obituary_Print_Localized(...). The obituary string will be localized here.
-
-可以用来修改击杀信息中的武器名称。<br>
-If you wanna modify the weapon names in obituary, may you can use this.
-
-```squirrel
-void function AddCallback_PrintObituaryLocalized( string functionref( string ) callbackFunc )
-```
+## 如何实现How it works
+我修改了很多文件，增加了一些回调。如果你发现模组没有正常工作，请检查是否被其他模组中的文件覆盖。
+I modified many scripts, added some callbacks. If this mod doesnt work well, check if it get overwritten by other mods.
 
 ## 新的别的函数New Functions
-我不知道为什么，它们有时候会报错。但我认为玩家名称中应该不具有ASCII表外的字符，又或者我写错了那张表？<br>
-I dont know why these func sometimes get error. There should be only ascii chars in the names. Did I get wront with this?
-
 
 ```squirrel
 // 返回字符的Ascii码
@@ -95,6 +53,14 @@ int function Ord(string c)
 // 从Ascii码得到字符
 // Return the char.
 string function Chr(int code)
+
+// 哈希玩家名字，结果不会包括网络名
+// Hash playername without clantag
+string hashName(string name)
+
+// 哈希玩家名字，包括网络名设置
+// Hash playername with clantag
+string hashNameWithTag(string name)
 ```
 
 
@@ -105,65 +71,8 @@ string function Chr(int code)
 The config file exists in the Northstar\mods\L1Nexus.AnonymousMode\
 
 
-修改这些变量来控制模组表现。修改后必须重启游戏。<br>
+配置文件中有许多变量，修改这些变量来控制模组表现。修改后必须重启游戏。<br>
 It contains some Convars you can modify. Restart the game after modifing.
-
-## Convars
-
-```squirrel
-	"ConVars": [
-		// 对玩家名的操作
-		// mode for players' names
-		{
-			"Name": "l1nexus_anonymous_mode",
-			// Digital/Replace/Apexlike/Ignore
-			"DefaultValue": "Apexlike"
-		},
-		// 替换所有玩家的名字的占位符
-		// used as all players names in Replace mode
-		{
-			"Name": "l1nexus_anonymous_placeholder",
-			"DefaultValue": "******"
-		},
-		// 是否对击杀记录处理?
-		// hash the obituary?
-		{
-			"Name": "l1nexus_anonymous_hashObit",
-			"DefaultValue": "true"
-		},
-		// Apexlike 模式下的前缀
-		// used for prefix in Apexlike mode
-		{
-			"Name": "l1nexus_anonymous_prefix",
-			"DefaultValue": "Pilot"
-		},
-		{
-			"Name": "l1nexus_anonymous_HidePermanentCockpitRui",
-			"DefaultValue": "true"
-		},
-		// 方便开发用的变量，不需要设置为true
-		// devMode, show player's complete name behind the modified
-		{
-			"Name": "l1nexus_anonymous_devMode",
-			"DefaultValue": "false"
-		},
-		// 网路tag替换为空、不更改和改动[ADV]或自定义
-		// Only hide the network or, ignore this, or replaced to [ADV], or custom
-		{
-			"Name": "l1nexus_anonymous_tag_mode",
-			// Empty/Ignore/ADV/Custom
-			"DefaultValue": "ADV"
-		},
-		// 自定义的网络名称
-		// Clantag used for all players
-		{
-			"Name": "l1nexus_anonymous_custom_tag",
-			// Empty/Ignore/ADV/Custom
-			"DefaultValue": "VDA"
-		}
-	]
-```
-
 
 # 远望Further updates
 
@@ -208,4 +117,8 @@ It contains some Convars you can modify. Restart the game after modifing.
 - Callsign(Titanfall, megakill, kill replay etc..) event supports.
 - TitanSelection(TTDM, TTS..) supports.
 - Voicechat hint(right up), kill hint(below crosshair) supports.
-- CTF, coliseum anouncements.
+- CTF, coliseum, ttdm, fd, attr, hunted supports.
+
+## v1.3.2
+
+- bugfix. Death replay works properly now.
