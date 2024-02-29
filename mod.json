@@ -42,6 +42,12 @@
 			"Name": "l1nexus_anonymous_hashObit",
 			"DefaultValue": "true"
 		},
+		// 是否替换计分板左侧玩家徽章?
+		// Replace the icon(badge) with yours in scoreboard?
+		{
+			"Name": "l1nexus_anonymous_replaceIcon",
+			"DefaultValue": "false"
+		},
 		// Apexlike 模式下的前缀
 		// used for prefix in Apexlike mode
 		{
@@ -63,7 +69,7 @@
 		{
 			"Name": "l1nexus_anonymous_tag_mode",
 			// Empty/Ignore/ADV/Custom
-			"DefaultValue": "Empty"
+			"DefaultValue": "ADV"
 		},
 		// 自定义的网络名称
 		// Clantag used for all players

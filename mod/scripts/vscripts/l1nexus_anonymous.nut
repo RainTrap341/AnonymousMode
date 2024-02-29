@@ -14,6 +14,7 @@ string prefix
 bool HidePermanentCockpitRui
 bool devMode
 bool hashObit
+bool replaceIcon
 string tagMode
 string customTag
 } file
@@ -36,6 +37,7 @@ void function l1nexusAnonymousInit()
     file.HidePermanentCockpitRui = GetConVarString("l1nexus_anonymous_HidePermanentCockpitRui") == "true" ? true : false
     file.hashObit = GetConVarString("l1nexus_anonymous_hashObit") == "true" ? true : false
     file.devMode = GetConVarString("l1nexus_anonymous_devMode") == "true" ? true : false
+    file.replaceIcon = GetConVarString("l1nexus_anonymous_replaceIcon") == "true" ? true : false
     file.tagMode = GetConVarString("l1nexus_anonymous_tag_mode")
     file.customTag = GetConVarString("l1nexus_anonymous_custom_tag")
 
@@ -108,6 +110,7 @@ string function hashName(string name)
 {
     // print("hashName Origin" + name)
     array<string> resultSplit = split(name, "[]");
+
     if (resultSplit.len() > 1) {
         name = strip(resultSplit[resultSplit.len() - 1])
         // print("strip resultSplit[resultSplit.len() - 1] " + name)
@@ -127,9 +130,59 @@ string function hashName(string name)
             break;
     }
     // print("hashName Hashed" + name)
-    return name;
+
+
+    return strip(name);
 }
 
+string function hashNameWithTag(string name)
+{
+    // print("hashName Origin" + name)
+    array<string> resultSplit = split(name, "[]");
+    string ctag = "";
+    if (resultSplit.len() > 1) {
+        name = strip(resultSplit[resultSplit.len() - 1])
+        ctag = strip(resultSplit[0])
+        // print("strip resultSplit[resultSplit.len() - 1] " + name)
+        // print("strip resultSplit[0] " + ctag)
+    }
+    switch(file.mode)
+    {
+        case "Digital":
+            name = _rand(name)
+            break
+        case "Replace":
+            name = file.placeholder
+            break
+        case "Apexlike":
+            name = HashToApexlike(name)
+            break
+        default:
+            break;
+    }
+    // print("hashName Hashed" + name)
+
+    name = getTag(ctag) + name
+    return strip(name);
+}
+
+string function getTag(string tag)
+{
+    switch (file.tagMode) {
+        case "ADV":
+            tag = "[ADV] ";
+            break;
+        case "Empty":
+            tag = "";
+            break;
+        case "Custom":
+            tag = "[" + file.customTag + "] ";
+            break;
+        default:
+            break;
+    }
+    return tag
+}
 
 // replace the scoreboard
 // GetPlayerName() 不会获取到玩家的Ctag
@@ -143,35 +196,19 @@ void function replaceScoreboard(entity e, var rui)
 
     entity player = GetLocalClientPlayer();
     player.HideCrosshairNames() // not work
-    string name = e.GetPlayerName();
+    string name = e.GetPlayerNameWithClanTag();
     string orginalName;
     if (file.devMode)
         orginalName = name;
-    name = hashName(name);
+    name = hashNameWithTag(name);
 
     if (file.devMode)
         name += " " + orginalName;
 
-    // handle the clantag
-    switch (file.tagMode) {
-        case "Ignore":
-            name = e.GetPlayerNameWithClanTag();
-            break;
-        case "ADV":
-            name = "[ADV] " + name;
-            break;
-        case "Custom":
-            name = "[" + file.customTag + "] " + name;
-            break;
-
-        default:
-            break;
-    }
-
-    name = strip(name)
     RuiSetString(rui, "playerName", name)
     // Patch
-    RuiSetImage( rui, "playerCard", CallsignIcon_GetSmallImage( PlayerCallsignIcon_GetActive( player ) ) )
+    if (file.replaceIcon)
+        RuiSetImage( rui, "playerCard", CallsignIcon_GetSmallImage( PlayerCallsignIcon_GetActive( player ) ) )
 }
 
 // replace the message sender name
