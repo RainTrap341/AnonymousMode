@@ -1,0 +1,76 @@
+{
+	"Name": "AnonymousMode",
+	"Description": "AnonymousMode",
+	"LoadPriority": 3,
+	"RequiredOnClient": false,
+	"Version": "1.2.1",
+
+	"Scripts": [
+		{
+			"Path": "l1nexus_anonymous.nut",
+			"RunOn": "(CLIENT || SERVER) && MP",
+			"ClientCallback": {
+				"After": "l1nexusAnonymousInit"
+			}
+		},
+		{
+			"Path": "ascii_table.nut",
+			"RunOn": "(CLIENT || SERVER) && MP",
+			"ClientCallback": {
+				"Before": "InitializeASCIITable"
+			}
+		}
+	],
+
+	"ConVars": [
+		// 对玩家名的操作
+		// mode for players' names
+		{
+			"Name": "l1nexus_anonymous_mode",
+			// Digital/Replace/Apexlike/Ignore
+			"DefaultValue": "Apexlike"
+		},
+		// 替换所有玩家的名字的占位符
+		// used as all players names in Replace mode
+		{
+			"Name": "l1nexus_anonymous_placeholder",
+			"DefaultValue": "******"
+		},
+		// 是否对击杀记录处理?
+		// hash the obituary?
+		{
+			"Name": "l1nexus_anonymous_hashObit",
+			"DefaultValue": "true"
+		},
+		// Apexlike 模式下的前缀
+		// used for prefix in Apexlike mode
+		{
+			"Name": "l1nexus_anonymous_prefix",
+			"DefaultValue": "Pilot"
+		},
+		{
+			"Name": "l1nexus_anonymous_HidePermanentCockpitRui",
+			"DefaultValue": "false"
+		},
+		// 方便开发用的变量，不需要设置为true
+		// devMode, show player's complete name behind the modified
+		{
+			"Name": "l1nexus_anonymous_devMode",
+			"DefaultValue": "false"
+		},
+		// 网路tag替换为空、不更改和改动[ADV]或自定义
+		// Only hide the network or, ignore this, or replaced to [ADV], or custom
+		{
+			"Name": "l1nexus_anonymous_tag_mode",
+			// Empty/Ignore/ADV/Custom
+			"DefaultValue": "Empty"
+		},
+		// 自定义的网络名称
+		// Clantag used for all players
+		{
+			"Name": "l1nexus_anonymous_custom_tag",
+			// Empty/Ignore/ADV/Custom
+			"DefaultValue": "VDA"
+		}
+	]
+}
