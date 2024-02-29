@@ -1,0 +1,9 @@
+"titan_base"
+{
+	"global"
+	{
+		ui_targetinfo		"ui/targetinfo_megaturret_fw"
+		ui_targetinfo_offset_z		160
+	}
+}
+

@@ -1,0 +1,4 @@
+npc_turret_sentry
+{
+	ui_targetinfo					"ui/targetinfo_reaper_bounty" [$mp]
+}

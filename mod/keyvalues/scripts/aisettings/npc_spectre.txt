@@ -1,0 +1,4 @@
+npc_spectre
+{
+	ui_targetinfo					"" [$mp]
+}

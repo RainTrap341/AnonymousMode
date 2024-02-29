@@ -1,0 +1,4 @@
+npc_titan
+{
+	ui_targetinfo			"ui/targetinfo_megaturret_fw"	[$mp]
+}
