@@ -108,7 +108,7 @@ void function KillReplayHud_Activate()
 		CallsignIcon callsignIcon = PlayerCallsignIcon_GetActive( attacker )
 
 		RuiSetBool( file.killReplayOverlayRui, "showKillerInfo", true )
-
+		RuiSetString( file.killReplayOverlayRui, "killerName", hashName(attackerName) )
 		RuiSetImage( file.killReplayOverlayRui, "cardImage", CallingCard_GetImage( callingCard ) )
 		RuiSetImage( file.killReplayOverlayRui, "iconImage", CallsignIcon_GetImage( callsignIcon ) )
 		RuiSetInt( file.killReplayOverlayRui, "layoutType", CallingCard_GetLayout( callingCard ) )
@@ -188,11 +188,11 @@ void function RoundWinningKillReplayClientHud_Activate()
 
 	string killerName = ""
 	if ( wasKilledByPet )
-		killerName = Localize( "#KILLREPLAY_WATCHING_KILLER_PET", Localize( attackerName ), Localize( attackerPetName ) )
+		killerName = Localize( "#KILLREPLAY_WATCHING_KILLER_PET", Localize( hashName(attackerName) ), Localize( attackerPetName ) )
 	else
 		killerName = attackerName
 
-	RuiSetString( file.killReplayOverlayRui, "killerName", killerName ) //TODO: See if this works for ctf!
+	RuiSetString( file.killReplayOverlayRui, "killerName", hashName(killerName) ) //TODO: See if this works for ctf!
 
 	if ( !viewEntity.IsPlayer() )
 		return
