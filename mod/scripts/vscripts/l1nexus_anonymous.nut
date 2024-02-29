@@ -106,10 +106,11 @@ string function replaceObituaryGeneric(string event, string name)
 
 string function hashName(string name)
 {
+    // print("hashName Origin" + name)
     array<string> resultSplit = split(name, "[]");
     if (resultSplit.len() > 1) {
-        name = resultSplit[resultSplit.len() - 1]
-        // print(" resultSplit[resultSplit.len() - 1] " + name)
+        name = strip(resultSplit[resultSplit.len() - 1])
+        // print("strip resultSplit[resultSplit.len() - 1] " + name)
     }
     switch(file.mode)
     {
@@ -125,11 +126,13 @@ string function hashName(string name)
         default:
             break;
     }
+    // print("hashName Hashed" + name)
     return name;
 }
 
 
 // replace the scoreboard
+// GetPlayerName() 不会获取到玩家的Ctag
 void function replaceScoreboard(entity e, var rui)
 {
     // HideFriendlyIndicatorAndCrosshairNames() // Not work
@@ -141,7 +144,6 @@ void function replaceScoreboard(entity e, var rui)
     entity player = GetLocalClientPlayer();
     player.HideCrosshairNames() // not work
     string name = e.GetPlayerName();
-    // print(name)
     string orginalName;
     if (file.devMode)
         orginalName = name;
@@ -149,11 +151,6 @@ void function replaceScoreboard(entity e, var rui)
 
     if (file.devMode)
         name += " " + orginalName;
-
-    array<string> resultSplit = split(e.GetPlayerNameWithClanTag(), "[]");
-    // if (resultSplit.len() > 2)
-    //     print(resultSplit[1])
-    // print(e.GetPlayerNameWithClanTag())
 
     // handle the clantag
     switch (file.tagMode) {

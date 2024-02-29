@@ -490,7 +490,10 @@ void function Obituary_Print_Generic( string localizedEvent, string entityName, 
 
 	foreach ( callbackFunc in l1nexusAnonymousGlobal.onPrintObituaryGeneric )
 	{
+		print("Obituary_Print_Generic " + entityName)
 		entityName = callbackFunc(localizedEvent, entityName )
+		print("Obituary_Print_Generic " + entityName)
+
 	}
 
 	var rui = CreateCockpitRui( $"ui/obituary_crawl_generic.rpak" )
