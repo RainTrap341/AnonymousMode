@@ -1,5 +1,6 @@
 global function l1nexusAnonymousInit
 global function hashName
+global function hashNameWithTag
 
 const int Base = 11
 const int MOD = 9997
@@ -17,6 +18,7 @@ bool hashObit
 bool replaceIcon
 string tagMode
 string customTag
+table<string, string> cache
 } file
 global struct l1nexusAnonymousGlobals{
    array<void functionref( ObitStringData )> onPrintObituary
@@ -54,16 +56,30 @@ void function Main()
     srand(InitialHash)
 
     // Add callbacks.
-    // AddCallback_OnReceivedSayTextMessage(filterChat)
+    AddCallback_OnReceivedSayTextMessage(filterChat)
     if (file.hashObit)
     {
         AddCallback_Obituary(replaceObituary)
         AddCallback_PrintObituaryGeneric(replaceObituaryGeneric)
     }
 
+    AddCallback_OnPlayerDisconnected(cleanPlayersFromCache)
+
     SetScoreboardUpdateCallback(replaceScoreboard)
 }
 
+void function cleanPlayersFromCache(entity player) {
+    string name = strip(player.GetPlayerName())
+    if (player == GetLocalClientPlayer()) {
+        file.cache.clear()
+        print("[Anonymous] clean all players ")
+    }
+    else if (name in file.cache)
+    {
+        delete file.cache[name]
+        print("[Anonymous] Remove player " + name + " from cache")
+    }
+}
 
 string function hashObit(entity ent, string name)
 {
@@ -89,8 +105,6 @@ string function hashObit(entity ent, string name)
 }
 
 
-
-
 // replace the kills
 array<string> function replaceObituary(entity attacker, entity victim, array<string> obit)
 {
@@ -103,6 +117,9 @@ array<string> function replaceObituary(entity attacker, entity victim, array<str
 // replace the kills
 string function replaceObituaryGeneric(string event, string name)
 {
+    if (strip(name) == "") {
+        return name
+    }
     return hashName(name)
 }
 
@@ -115,6 +132,12 @@ string function hashName(string name)
         name = strip(resultSplit[resultSplit.len() - 1])
         // print("strip resultSplit[resultSplit.len() - 1] " + name)
     }
+
+    if (name in file.cache) {
+        return file.cache[name]
+    }
+
+    string originalName = name;
     switch(file.mode)
     {
         case "Digital":
@@ -131,6 +154,7 @@ string function hashName(string name)
     }
     // print("hashName Hashed" + name)
 
+    file.cache[originalName] <- name;
 
     return strip(name);
 }
@@ -146,20 +170,31 @@ string function hashNameWithTag(string name)
         // print("strip resultSplit[resultSplit.len() - 1] " + name)
         // print("strip resultSplit[0] " + ctag)
     }
-    switch(file.mode)
-    {
-        case "Digital":
-            name = _rand(name)
-            break
-        case "Replace":
-            name = file.placeholder
-            break
-        case "Apexlike":
-            name = HashToApexlike(name)
-            break
-        default:
-            break;
+
+    if (name in file.cache) {
+        name = file.cache[name]
     }
+    else
+    {
+        string originalName = name;
+        switch(file.mode)
+        {
+            case "Digital":
+                name = _rand(name)
+                break
+            case "Replace":
+                name = file.placeholder
+                break
+            case "Apexlike":
+                name = HashToApexlike(name)
+                break
+            default:
+                break;
+        }
+        file.cache[originalName] <- name;
+    }
+
+
     // print("hashName Hashed" + name)
 
     name = getTag(ctag) + name
@@ -211,26 +246,22 @@ void function replaceScoreboard(entity e, var rui)
         RuiSetImage( rui, "playerCard", CallsignIcon_GetSmallImage( PlayerCallsignIcon_GetActive( player ) ) )
 }
 
+void function printCache() {
+    print("CacheTable:")
+    foreach (i, value in file.cache) {
+        print(i + " -> " + value)
+    }
+}
+
 // replace the message sender name
-// ClClient_MessageStruct function filterChat(ClClient_MessageStruct message)
-// {
-//     if (!message.player.IsPlayer())
-//         return message
-//     print(message.playerName)
-//     switch(file.mode)
-//     {
-//         case "Digital":
-//             message.playerName = _rand(message.playerName)
-//             break
-//         case "Fill":
-//             message.playerName = file.placeholder
-//             break
-//         case "Apexlike":
-//             message.playerName = HashToApexlike(message.playerName)
-//             break
-//     }
-//     return message
-// }
+ClClient_MessageStruct function filterChat(ClClient_MessageStruct message)
+{
+    if (!message.player.IsPlayer())
+        return message
+    // print(message.playerName)
+    message.playerName = hashNameWithTag(message.playerName)
+    return message
+}
 
 // rand int
 string function _rand(string name)

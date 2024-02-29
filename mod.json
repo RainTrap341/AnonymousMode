@@ -3,9 +3,13 @@
 	"Description": "AnonymousMode",
 	"LoadPriority": 3,
 	"RequiredOnClient": false,
-	"Version": "1.2.1",
+	"Version": "1.3.3",
 
 	"Scripts": [
+		{
+			"Path": "_custom_codecallbacks_client.gnut",
+			"RunOn": "CLIENT"
+		},
 		{
 			"Path": "l1nexus_anonymous.nut",
 			"RunOn": "(CLIENT || SERVER) && MP",
