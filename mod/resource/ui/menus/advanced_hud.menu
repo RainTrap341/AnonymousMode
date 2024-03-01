@@ -193,6 +193,7 @@ resource/ui/menus/advanced_hud.menu
 				"#anonymous_digital"	digital
 				"#anonymous_replace"	replace
 				"#anonymous_apexlike"	apexlike
+				"#anonymous_ignore"	ignore
 			}
 
 			pin_to_sibling			SwitchAnonymousEnable
