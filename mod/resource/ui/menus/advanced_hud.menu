@@ -162,41 +162,23 @@ resource/ui/menus/advanced_hud.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 		}
-		SwitchAnonymousEnable
-		{
-			ControlName				RuiButton
-			InheritProperties		ControlsSwitchButton
-			style					DialogListButton
-			navUp					SwitchDofEnable
-			navDown					SwitchAnonymousMode
-			ConVar					"l1nexus_anonymous_enable"
-			list
-			{
-				"#anonymous_enable"	true
-				"#anonymous_disable" false
-			}
-
-			pin_to_sibling			SwitchDofEnable
-			pin_corner_to_sibling	TOP_LEFT
-			pin_to_sibling_corner	BOTTOM_LEFT
-		}
 		SwitchAnonymousMode
 		{
 			ControlName				RuiButton
 			InheritProperties		ControlsSwitchButton
 			style					DialogListButton
-			navUp					SwitchAnonymousEnable
+			navUp					SwitchDofEnable
 			navDown					SwitchAnonymousTag
 			ConVar					"l1nexus_anonymous_mode"
 			list
 			{
+				"#anonymous_apexlike"	apexlike
 				"#anonymous_digital"	digital
 				"#anonymous_replace"	replace
-				"#anonymous_apexlike"	apexlike
 				"#anonymous_ignore"	ignore
 			}
 
-			pin_to_sibling			SwitchAnonymousEnable
+			pin_to_sibling			SwitchDofEnable
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 		}
@@ -213,6 +195,7 @@ resource/ui/menus/advanced_hud.menu
 				"[ADV]"	adv
 				"#anonymous_empty"	empty
 				"#anonymous_custom"	custom
+				"#anonymous_ignore"	ignore
 			}
 
 			pin_to_sibling			SwitchAnonymousMode
@@ -229,8 +212,8 @@ resource/ui/menus/advanced_hud.menu
 			ConVar					"l1nexus_anonymous_HidePermanentCockpitRui"
 			list
 			{
-				"#anonymous_enable"	true
-				"#anonymous_disable" false
+				"#SETTING_OFF" false
+				"#SETTING_ON"	true
 			}
 
 			pin_to_sibling			SwitchAnonymousTag

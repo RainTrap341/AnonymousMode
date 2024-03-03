@@ -107,7 +107,13 @@ void function cleanPlayerFromCacheCallback(entity player) {
 
 void function cleanNameFromCache(string name) {
     name = strip(name)
-    if (name == GetLocalClientPlayer().GetPlayerName()) {
+
+    if (name == "") {
+        return
+    }
+
+    entity player = GetLocalClientPlayer()
+    if (player != null && name == player.GetPlayerName()) {
         cleanPlayersFromCache()
     }
     else if (name in file.cache)
@@ -129,7 +135,7 @@ void function trySwitchPermanentCockpitRui()
     if(IsHidePermanentCockpitRuiEnable())
         HidePermanentCockpitRui(); // Enemy health bar is a permanentcockpitrui.
     else
-        ShowPermanentCockpitRui();  
+        ShowPermanentCockpitRui();
 }
 
 string function hashObit(entity ent, string name)
@@ -304,7 +310,7 @@ void function replaceScoreboard(entity e, var rui)
     if (file.devMode)
         orginalName = name;
 
-        
+
     name = hashNameWithTag(name);
 
     if (file.devMode)
@@ -343,7 +349,7 @@ string function _rand(string name)
 // slice did this.
 string function Hash(string name)
 {
-    
+
 
     int hash = InitialHash
 

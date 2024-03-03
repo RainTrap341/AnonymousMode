@@ -33,7 +33,7 @@ void function InitAdvancedHudMenu()
 
 
 
-	SetupButton( Hud_GetChild( menu, "SwitchAnonymousEnable" ), "#ANONYMOUS_TITLE_ENABLE", "#ANONYMOUS_DESCRIPTION_ENABLE" )
+	// SetupButton( Hud_GetChild( menu, "SwitchAnonymousEnable" ), "#ANONYMOUS_TITLE_ENABLE", "#ANONYMOUS_DESCRIPTION_ENABLE" )
 	SetupButton( Hud_GetChild( menu, "SwitchAnonymousMode" ), "#ANONYMOUS_TITLE_NAMEMODE", "#ANONYMOUS_DESCRIPTION_NAMEMODE" )
 	SetupButton( Hud_GetChild( menu, "SwitchAnonymousTag" ), "#ANONYMOUS_TITLE_TAGMODE", "#ANONYMOUS_DESCRIPTION_TAGMODE" )
 	SetupButton( Hud_GetChild( menu, "SwitchAnonymousHidePermanentCockpit" ), "#ANONYMOUS_TITLE_HidePermanentCockpit", "#ANONYMOUS_DESCRIPTION_HidePermanentCockpit" )
