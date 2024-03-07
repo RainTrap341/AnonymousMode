@@ -64,6 +64,11 @@ void function InitAdvancedHudMenu()
 	AddMenuFooterOption( menu, BUTTON_A, "#A_BUTTON_SELECT" )
 	AddMenuFooterOption( menu, BUTTON_B, "#B_BUTTON_BACK", "#BACK" )
 	AddMenuFooterOption( menu, BUTTON_BACK, "#BACKBUTTON_RESTORE_DEFAULTS", "#RESET_CONTROLLER_TO_DEFAULT", ResetToDefaultsDialog )
+
+
+	AddMenuEventHandler(menu, eUIEvent.MENU_CLOSE, void function () {
+		thread RunClientScript( "L1nexusAnonymousSaveSetting" )
+	})
 }
 
 void function ResetToDefaultsDialog( var button )
@@ -80,8 +85,9 @@ void function ResetToDefaultsDialog( var button )
 
 void function ResetSettingsToDefaults()
 {
-	SetConVarToDefault( "l1nexus_anonymous_enable" )
+	SetConVarToDefault( "l1nexus_anonymous_tag_mode" )
 	SetConVarToDefault( "l1nexus_anonymous_mode" )
+	SetConVarToDefault( "l1nexus_anonymous_HidePermanentCockpitRui" )
 
 	SetConVarToDefault( "hud_setting_showButtonHints" )
 	SetConVarToDefault( "hud_setting_showTips" )

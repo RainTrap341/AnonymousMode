@@ -1,8 +1,10 @@
 untyped
 
+global function NSHandleLoadResult
 global function l1nexusAnonymousInit
 global function hashName
 global function hashNameWithTag
+global function L1nexusAnonymousSaveSetting
 
 const int Base = 11
 const int MOD = 9997
@@ -22,23 +24,34 @@ bool replaceIcon
 
 string customTag
 table<string, string> cache
+
+string location = "./setting.json"
 } file
+
+struct{
+string hashNameType
+string hashTagType
+bool shouldHidePermanentCockpitRui
+} setting
+
 global struct l1nexusAnonymousGlobals{
    array<void functionref( ObitStringData )> onPrintObituary
    array<string functionref( string )> onPrintObituaryLocalized
    array<array<string> functionref( entity, entity, array<string> )> onObituary
    array<string functionref( string, string )> onPrintObituaryGeneric
+
+   void functionref() save
+   table functionref() load
 }
 global l1nexusAnonymousGlobals l1nexusAnonymousGlobal
 
 
-// Waiting for the end to come. Wishing I had strength to stand.
 void function l1nexusAnonymousInit()
 {
     file.lastMode = GetNameMode()
 
     file.placeholder = GetConVarString("l1nexus_anonymous_placeholder")
-    file.prefix = GetConVarString("l1nexus_anonymous_prefix")
+    file.prefix =  GetConVarString("l1nexus_anonymous_prefix")
 
     file.hashObit = strip(GetConVarString("l1nexus_anonymous_hashObit")).tolower() == "true" ? true : false
     file.devMode = strip(GetConVarString("l1nexus_anonymous_devMode")).tolower() == "true" ? true : false
@@ -48,6 +61,47 @@ void function l1nexusAnonymousInit()
 
 
     thread Main()
+}
+
+
+void function L1nexusAnonymousSaveSetting() {
+    #if CLIENT
+    // NSSaveJSONFile(file.location, settingTable)
+    table settingTable = {}
+
+    settingTable["HidePermanentCockpitRui"] <- IsHidePermanentCockpitRuiEnable()
+    settingTable["NameMode"] <- GetNameMode()
+    settingTable["TagMode"] <- GetTagMode()
+    NSSaveJSONFile(file.location, settingTable)
+    printt("[Anonymous] Saving Setting")
+
+    #endif
+}
+
+void function L1nexusAnonymousLoadSetting() {
+    NS_InternalLoadFile(file.location)
+}
+
+// hack: 不知道为什么没有找到这个函数
+void function NSHandleLoadResult(_1, _2,  string json) {
+    // print("NSHandleLoadResult")
+    // print(json)
+    if (strip(json) == "") {
+        printt("[Anonymous] No local setting profile found. Saving..")
+        L1nexusAnonymousSaveSetting()
+    }
+    else
+    {
+        table settingTable = DecodeJSON(json)
+
+        // print(settingTable)
+        SetConVarBool("l1nexus_anonymous_HidePermanentCockpitRui", settingTable["HidePermanentCockpitRui"])
+        SetConVarString("l1nexus_anonymous_mode", settingTable["NameMode"])
+        SetConVarString("l1nexus_anonymous_tag_mode", settingTable["TagMode"])
+
+
+        print("[Anonymous] Loading Setting")
+    }
 }
 
 bool function IsHidePermanentCockpitRuiEnable()
@@ -90,7 +144,7 @@ void function Main()
     SetScoreboardUpdateCallback(replaceScoreboard)
 
 
-
+    L1nexusAnonymousLoadSetting()
 
 }
 
@@ -310,6 +364,9 @@ void function replaceScoreboard(entity e, var rui)
     if (file.devMode)
         orginalName = name;
 
+    // print("ent.GetTitleForUI() " + e.GetTitleForUI())
+    // print("ent.GetTitleForUI() " + e.SetTitle("XXX"))
+    // print("ent.GetTitleForUI() " + e.GetTitleForUI())
 
     name = hashNameWithTag(name);
 
