@@ -65,17 +65,29 @@ void function l1nexusAnonymousInit()
 
 
 void function L1nexusAnonymousSaveSetting() {
-    #if CLIENT
     // NSSaveJSONFile(file.location, settingTable)
-    table settingTable = {}
+    try {
+    #if CLIENT
 
-    settingTable["HidePermanentCockpitRui"] <- IsHidePermanentCockpitRuiEnable()
-    settingTable["NameMode"] <- GetNameMode()
-    settingTable["TagMode"] <- GetTagMode()
-    NSSaveJSONFile(file.location, settingTable)
-    printt("[Anonymous] Saving Setting")
+        table settingTable = {}
+
+        settingTable["HidePermanentCockpitRui"] <- IsHidePermanentCockpitRuiEnable()
+        settingTable["NameMode"] <- GetNameMode()
+        settingTable["TagMode"] <- GetTagMode()
+        NSSaveJSONFile(file.location, settingTable)
+        print("[Anonymous] Saving setting")
+    #endif
+
+    #if UI
+
+    print("[Anonymous] Waiting client scripts")
 
     #endif
+    } catch (exception){
+        print("[Anonymous] Failed to save setting")
+    }
+
+
 }
 
 void function L1nexusAnonymousLoadSetting() {
@@ -86,22 +98,27 @@ void function L1nexusAnonymousLoadSetting() {
 void function NSHandleLoadResult(_1, _2,  string json) {
     // print("NSHandleLoadResult")
     // print(json)
-    if (strip(json) == "") {
-        printt("[Anonymous] No local setting profile found. Saving..")
-        L1nexusAnonymousSaveSetting()
+    try {
+        if (strip(json) == "") {
+            printt("[Anonymous] No local setting profile found. Saving..")
+            L1nexusAnonymousSaveSetting()
+        }
+        else
+        {
+            table settingTable = DecodeJSON(json)
+
+            // print(settingTable)
+            SetConVarBool("l1nexus_anonymous_HidePermanentCockpitRui", settingTable["HidePermanentCockpitRui"])
+            SetConVarString("l1nexus_anonymous_mode", settingTable["NameMode"])
+            SetConVarString("l1nexus_anonymous_tag_mode", settingTable["TagMode"])
+
+
+            print("[Anonymous] Loading setting")
+        }
+    } catch (exception){
+        print("[Anonymous] Failed to loading setting")
     }
-    else
-    {
-        table settingTable = DecodeJSON(json)
 
-        // print(settingTable)
-        SetConVarBool("l1nexus_anonymous_HidePermanentCockpitRui", settingTable["HidePermanentCockpitRui"])
-        SetConVarString("l1nexus_anonymous_mode", settingTable["NameMode"])
-        SetConVarString("l1nexus_anonymous_tag_mode", settingTable["TagMode"])
-
-
-        print("[Anonymous] Loading Setting")
-    }
 }
 
 bool function IsHidePermanentCockpitRuiEnable()
@@ -331,6 +348,7 @@ string function hashNameWithTag(string name)
 // 获取玩家应该得到的Tag
 string function getTag(string tag)
 {
+    tag = strip(tag)
     switch (GetTagMode()) {
         case "adv":
             tag = "[ADV] ";
@@ -342,6 +360,7 @@ string function getTag(string tag)
             tag = "[" + file.customTag + "] ";
             break;
         default:
+            tag = tag == "" ? "" : "[" + tag + "] ";
             break;
     }
     return tag
@@ -379,7 +398,7 @@ void function replaceScoreboard(entity e, var rui)
         RuiSetImage (rui, "playerCard", CallsignIcon_GetSmallImage( PlayerCallsignIcon_GetActive( player ) ) )
 }
 
-void function printCache() {
+void function printCacheTable() {
     print("CacheTable:")
     foreach (i, value in file.cache) {
         print(i + " -> " + value)
@@ -395,7 +414,6 @@ ClClient_MessageStruct function filterChat(ClClient_MessageStruct message)
     message.playerName = hashNameWithTag(message.playerName)
     return message
 }
-
 
 // rand int
 string function _rand(string name)

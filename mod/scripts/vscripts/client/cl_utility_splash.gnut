@@ -112,7 +112,7 @@ function CLUtilitySplash_Init()
 		function SetTextForGroup( groupIndex, text, arg1 = null )
 		{
 			Assert( groupIndex in this.textGroupStrings )
-			print("scripts/vscripts/client/cl_utility_splash.gnut SetTextForGroup " + text)
+			// print("scripts/vscripts/client/cl_utility_splash.gnut SetTextForGroup " + text)
 			this.textGroupStrings[ groupIndex ] = text//.toupper()
 			if ( arg1 )
 				this.textGroupStringsVar1[ groupIndex ] = arg1

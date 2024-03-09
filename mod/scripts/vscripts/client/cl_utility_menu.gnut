@@ -233,7 +233,7 @@ function CLUtilityMenu_Init()
 
 		function SetEntity( ent, offset = Vector( 0, 0, 0 ), screenXOffset = 0, screenYOffset = 0 )
 		{
-			print("scripts/vscripts/client/cl_utility_menu.gnut SetEntity " + ent)
+			// print("scripts/vscripts/client/cl_utility_menu.gnut SetEntity " + ent)
 
 			foreach ( element in this.elements )
 				element.SetEntity( ent, offset, screenXOffset, screenYOffset )
@@ -241,7 +241,7 @@ function CLUtilityMenu_Init()
 
 		function SetEntityOverhead( ent, offset = Vector( 0, 0, 0 ), screenXOffset = 0, screenYOffset = 0 )
 		{
-			print("scripts/vscripts/client/cl_utility_menu.gnut SetEntityOverhead " + ent)
+			// print("scripts/vscripts/client/cl_utility_menu.gnut SetEntityOverhead " + ent)
 
 			foreach ( element in this.elements )
 				element.SetEntityOverhead( ent, offset, screenXOffset, screenYOffset )
