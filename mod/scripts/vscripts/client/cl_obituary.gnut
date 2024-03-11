@@ -327,7 +327,7 @@ function Obituary( entity attacker, string attackerClass, entity victim, int scr
 	// print("attackerGetBossPlayer()" + attacker.GetBossPlayer())
 
 	// HACK: enforce hash attacker name on sentry
-	if (attacker.GetClassName() == "class C_NPC_SentryTurret" && attacker.GetBossPlayer() != null) {
+	if (attacker != null && attacker.GetClassName() == "class C_NPC_SentryTurret" && attacker.GetBossPlayer() != null) {
 		// print("Oops! Hack it.")
 		attackerString = Localize( "#OBIT_PLAYER_STRING", Obits[0] )
 	}
